@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+   
+    <!-- Ground Filter -->
+    <include file="$(find points_preprocessor)/launch/ring_ground_filter.launch" />
+    <rosparam file="$(find simulation)/config/ring_ground_filter.yaml" command="load" />
+    
+
+</launch>

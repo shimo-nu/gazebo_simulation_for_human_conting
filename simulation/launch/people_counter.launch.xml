@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+
+
+    <!-- RemoveWall -->
+    <node pkg="simulation" name="peoplecounter" type="simulation" output="screen">
+        <param name="pointcloud_topic" value="/points_no_wall"/>
+        <param name="segment_topic" value="/adaptive_clustering/markers"/>
+        <param name="compare_pcd_file" value="$(find simulation)/world/map2.pcd"/>
+        <param name="resolution" value="0.2"/>
+    </node>
+
+    <!-- <node pkg="simulation" name="people_counter" type="people_counter" output="screen" >
+
+    </node> -->
+    
+
+</launch>

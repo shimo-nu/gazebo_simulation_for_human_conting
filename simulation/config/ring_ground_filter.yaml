@@ -1,0 +1,4 @@
+ring_ground_filter:
+  sensor_model: 16
+  point_topic: "/points_raw"  
+  sensor_height: 1

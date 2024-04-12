@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+
+
+    <!-- Clustering -->
+    <node pkg="adaptive_clustering" name="adaptive_clustering" type="adaptive_clustering">
+        <param name="input_topic" value="/points_no_wall"/>
+        <param name="print_fps" value="true"/>
+    </node>
+  
+
+    <!-- <node pkg="simulation" name="people_counter" type="people_counter" output="screen" >
+
+    </node> -->
+    
+
+</launch>

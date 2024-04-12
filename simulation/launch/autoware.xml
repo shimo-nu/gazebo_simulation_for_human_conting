@@ -1,0 +1,43 @@
+<!-- state publisher  -->
+<launch>
+
+    <!-- World to Map -->
+    <include file="$(find ttdc_fix_sensor)/launch/tf/ttdc_fix_sensoer_AW_tf.launch" />
+    
+    <!-- Map Loader -->
+    <include file="$(find map_file)/launch/points_map_loader.launch">
+        <arg name="scene_num" value="noupdate"/>
+        <arg name="path_area_list" value="None"/>
+        <arg name="path_pcd" value="$(find simulation)/world/map2.pcd"/>
+    </include>
+    
+    <!-- Voxel Grid  -->
+    <include file="$(find points_downsampler)/launch/points_downsample.launch">
+        <arg name="node_name" value="voxel_grid_filter"/>   
+        <arg name="points_topic" value="/points_raw"/>
+    </include>
+    
+    <!-- Ndt Matching -->
+    <include file="$(find lidar_localizer)/launch/ndt_matching.launch">
+        <arg name="method_type" value="0"/>
+        <arg name="use_odom" value="False"/>
+        <arg name="use_imu" value="False"/>
+        <arg name="imu_upside_down" value="False"/>
+        <arg name="imu_topic" value="/imu_raw"/>
+        <arg name="get_height" value="False"/>
+        <arg name="output_log_data" value="False"/>
+    </include>
+
+
+    <!-- Ground Filter -->
+    <include file="$(find points_preprocessor)/launch/ring_ground_filter.launch" />
+    <rosparam file="$(find simulation)/config/ring_ground_filter.yaml" command="load" />
+    
+    <!-- Clustering -->
+    <node pkg="adaptive_clustering" name="adaptive_clustering" type="adaptive_clustering">
+        <param name="input_topic" value="points_no_ground"/>
+        <param name="print_fps" value="true"/>
+    </node>
+      
+
+</launch>

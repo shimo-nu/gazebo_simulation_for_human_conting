@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<robot name="human" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="height" value="1.7" />
+    <xacro:property name="radius" value="0.15" />
+    <link name="link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0 " />
+            <geomtry>
+                <cylinder length="${height}" radius="${radius}" />
+            </geomtry>
+            <material name="DarkGray" />
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0 " />
+            <geomtry>
+                <cylinder length="${height}" radius="${radius}" />
+            </geomtry>
+        </collision>
+    </link>
+</robot>

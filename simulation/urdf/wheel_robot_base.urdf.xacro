@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<robot name="wheel_robot_base" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Included URDF/XACRO Files -->
+  <xacro:include filename="$(find model_pkg)/urdf/materials.urdf.xacro" />
+  <xacro:include filename="$(find model_pkg)/urdf/wheel.urdf.xacro" />
+
+  <!-- PROPERTY LIST -->
+  <!--All units in m-kg-s-radians unit system -->
+  <property name="M_PI" value="3.1415926535897931" />
+
+  <!-- Main Body-base -->
+  <property name="base_x_size" value="1.0" />
+  <property name="base_y_size" value="0.5" />
+  <property name="base_z_size" value="0.25" />
+  <property name="base_mass" value="70" /> <!-- in kg-->
+
+  <!--Inertial macros for the box and cylinder. Units are kg*m^2-->
+  <macro name="box_inertia" params="m x y z">
+    <inertia  ixx="${m*(y*y+z*z)/12}" ixy = "0" ixz = "0"
+              iyy="${m*(x*x+z*z)/12}" iyz = "0"
+              izz="${m*(x*x+z*z)/12}" />
+  </macro>
+
+  <!-- dummy link -->
+  <!-- <link name="odom" /> -->
+
+  <!-- BASE-FOOTPRINT -->
+  <!-- base_link is a fictitious link(frame) that is on the ground right below base_body_link origin -->
+  <link name="base_foot_link">
+    <inertial>
+      <mass value="0.0001" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+          iyy="0.0001" iyz="0.0"
+          izz="0.0001" />
+    </inertial>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+            <box size="0.001 0.001 0.001" />
+        </geometry>
+    </visual>
+  </link>
+<!-- 
+  <joint name="odom_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="odom" />
+  </joint> -->
+
+  <gazebo reference="base_body_link">
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+  <joint name="wheel_joint" type="fixed">
+    <origin xyz="0 0 ${wheel_radius - base_z_origin_to_wheel_origin}" rpy="0 0 0" />
+    <parent link="base_body_link"/>
+    <child link="base_foot_link" />
+  </joint>
+
+  <!-- BASE-LINK -->
+  <!--Actual body/chassis of the robot-->
+  <link name="base_body_link">
+    <inertial>
+      <mass value="${base_mass}" />
+      <origin xyz="0 0 0" />
+      <!--The 3x3 rotational inertia matrix. -->
+      <box_inertia  m="${base_mass}" x="${base_x_size}" y="${base_y_size}" z="${base_z_size}"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="1 0.5 0.25"/>
+      </geometry>
+      <material name="Yellow" />
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0 " />
+      <geometry>
+        <box size="1 0.5 0.25"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="base_body_link">
+    <material>Gazebo/Yellow</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+  <!-- WHEELs -->
+  <wheel fb="front" lr="right" parent="base_foot_link" translateX="1" translateY="-1" flipY="-1"/>
+  <wheel fb="front" lr="left" parent="base_foot_link" translateX="1" translateY="1" flipY="-1"/>
+  <wheel fb="back" lr="right" parent="base_foot_link" translateX="-1" translateY="-1" flipY="-1"/>
+  <wheel fb="back" lr="left" parent="base_foot_link" translateX="-1" translateY="1" flipY="-1"/>
+
+  <gazebo>
+    <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+      <alwaysOn>true</alwaysOn>
+      <updateRate>50.0</updateRate>
+      <leftFrontJoint>front_left_wheel_joint</leftFrontJoint>
+      <rightFrontJoint>front_right_wheel_joint</rightFrontJoint>
+      <leftRearJoint>back_left_wheel_joint</leftRearJoint>
+      <rightRearJoint>back_right_wheel_joint</rightRearJoint>
+      <wheelSeparation>${base_y_size}</wheelSeparation>
+      <wheelDiameter>${2*wheel_radius}</wheelDiameter>
+      <torque>35</torque>
+      <broadcastTF>1</broadcastTF>
+      <odometryFrame>odom</odometryFrame>
+      <odometryTopic>odom</odometryTopic>
+      <commandTopic>cmd_vel</commandTopic>
+      <robotBaseFrame>base_body_link</robotBaseFrame>
+    </plugin>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so" >
+    </plugin>
+  </gazebo>
+
+
+  <xacro:arg name="gpu" default="true"/>
+  <xacro:property name="gpu" value="$(arg gpu)" />
+
+  <xacro:include filename="$(find model_pkg)/urdf/VLP-16.urdf.xacro"/>
+  <VLP-16 parent="base_body_link" name="velodyne" topic="/points_raw" hz="10" samples="440" gpu="${gpu}">
+    <origin xyz="0 0 0.4" rpy="0 0 0" />
+  </VLP-16>
+
+</robot>
