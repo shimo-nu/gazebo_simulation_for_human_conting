@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <launch>
-
     <arg name="paused" default="false" />
     <arg name="show_rviz" default="true" />
     <arg name="use_sim_time" default="true" />
@@ -8,96 +7,17 @@
     <arg name="headless" default="false" />
     <arg name="debug" default="false" />
     <arg name="verbose" default="false" />
-    <arg name="world_name" default="$(find simulation)/worlds/simulation.world" />
+    <arg name="world_name" default="$(find-pkg-share journal1-sim)/world/simulation.world" />
 
     <!-- Start gazebo and load the world -->
-    <include file="$(find gazebo_ros)/launch/empty_world.launch">
-        <arg name="paused" value="$(arg paused)" />
-        <arg name="use_sim_time" value="$(arg use_sim_time)" />
-        <arg name="gui" value="$(arg gui)" />
-        <arg name="headless" value="$(arg headless)" />
-        <arg name="debug" value="$(arg debug)" />
-        <arg name="verbose" value="$(arg verbose)" />
-        <arg name="world_name" value="$(arg world_name)" />
+    <include file="$(find-pkg-share journal1-sim)/launch/simulation.launch.py">
+        <arg name="paused" value="$(var paused)" />
+        <arg name="show_rviz" value="$(var show_rviz)" />
+        <arg name="use_sim_time" value="$(var use_sim_time)" />
+        <arg name="gui" value="$(var gui)" />
+        <arg name="headless" value="$(var headless)" />
+        <arg name="debug" value="$(var debug)" />
+        <arg name="verbose" value="$(var verbose)" />
+        <arg name="world_name" value="$(var world_name)" />
     </include>
-
-    <!-- <include file="$(find gazebo_ros)/launch/empty_world.launch">
-        <arg name="paused" value="$(arg paused)" />
-        <arg name="use_sim_time" value="$(arg use_sim_time)" />
-        <arg name="gui" value="$(arg gui)" />
-        <arg name="headless" value="$(arg headless)" />
-        <arg name="debug" value="$(arg debug)" />
-        <arg name="verbose" value="$(arg verbose)" />
-        <arg name="world_name" value="$(arg world_name)" />
-    </include> -->
-
-    <!-- Spawn Human -->
-    <group ns="h1">
-        <include file="$(find simulation)/launch/human.launch.xml">
-            <arg name="robot_name" value="h1" />
-            <arg name="init_pose" value="-x -0.5 -y 3.5 -z 0" />
-        </include>
-    </group>
-
-    <group ns="h2">
-        <include file="$(find simulation)/launch/human.launch.xml">
-            <arg name="robot_name" value="h2" />
-            <arg name="init_pose" value="-x 3.5 -y 4.5 -z 0" />
-        </include>
-    </group>
-    <group ns="h3">
-        <include file="$(find simulation)/launch/human.launch.xml">
-            <arg name="robot_name" value="h3" />
-            <arg name="init_pose" value="-x 5.5 -y 4.5 -z 0" />
-        </include>
-        <include file="$(find simulation)/launch/human_teleop.launch">
-            <arg name="model_name" value="h3" />
-            <arg name="input_csv_file_path" value="$(find simulation)/route/human3.csv" />
-        </include>
-    </group>
-    <group ns="h4">
-        <include file="$(find simulation)/launch/human.launch.xml">
-            <arg name="robot_name" value="h4" />
-            <arg name="init_pose" value="-x -3.5 -y 5.5 -z 0" />
-        </include>
-        <include file="$(find simulation)/launch/human_teleop.launch">
-            <arg name="model_name" value="h4" />
-            <arg name="input_csv_file_path" value="$(find simulation)/route/human4.csv" />
-        </include>
-    </group>
-
-
-    <!-- Spawn the example robot -->
-    <arg name="gpu" default="true"/>
-    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find model_pkg)/urdf/wheel_robot_base.urdf.xacro' gpu:=$(arg gpu)" />
-
-    
-    <!-- <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
-        <param name="publish_frequency" type="double" value="30.0" />
-    </node> -->
-    
-    
-    
-    <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" />
-        
-    
-    <!-- <node pkg="tf" type="static_transform_publisher" name="base_link_to_odom" args="0 0 0 0 0 0 /base_link /base_body_link 100" /> -->
-
-    <!-- Rviz -->
-    <group if="$(arg show_rviz)">
-        <node name="rviz" pkg="rviz" type="rviz" output="screen" args="-d $(find simulation)/rviz/simulation.rviz"/>
-        <!-- load joint controller configurations from YAML file to parameter server -->
-        <rosparam file="$(find simulation)/config/joint_position_control.yaml" command="load" />
-    
-        <!-- load the controllers -->
-      <node name="wheel_robot_controller" pkg="controller_manager" type="spawner" output="screen"
-        args="joint_state_controller" />
-  
-      <!-- publish all the frames to TF -->
-      <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
-        <param name="publish_frequency" value="30"/> <!-- Hz -->
-  
-      </node>
-    </group>
-  
 </launch>
