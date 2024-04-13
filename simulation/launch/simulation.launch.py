@@ -1,5 +1,5 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction, SetLaunchConfiguration, LogInfo
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction, SetLaunchConfiguration, LogInfo, ExecuteProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution, FindExecutable
 from launch_ros.actions import Node
@@ -31,8 +31,14 @@ def generate_launch_description():
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
 
     # Load urdf 
-    with open(os.path.join(get_package_share_directory('journal1-sim'), 'urdf', 'wheel_robot_base.urdf'), 'r') as urdf_file:
+    with open(os.path.join(get_package_share_directory('journal1-sim'), 'urdf', 'test.urdf'), 'r') as urdf_file:
         robot_description_content = urdf_file.read()
+
+
+    xml = robot_description_content.replace('"', '\\"')
+
+    swpan_args = '{name: \"my_robot\", xml: \"' + xml + '\" }'
+
 
     # Load xacro
     # robot_description = Command([
@@ -74,7 +80,7 @@ def generate_launch_description():
         
     )
     
-    # node_list.extend([gzserver_cmd, gzclient_cmd])
+    node_list.extend([gzserver_cmd, gzclient_cmd])
 
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
@@ -83,7 +89,7 @@ def generate_launch_description():
         parameters=[{'robot_description': robot_description_content}]
     )
     
-    node_list.append(robot_state_publisher_node)
+    # node_list.append(robot_state_publisher_node)
 
     
     joint_state_spawner = Node(
@@ -101,8 +107,20 @@ def generate_launch_description():
         output='screen'
     )
     
+    # gazebo_robot_spawner = Node(
+    #   package='gazebo_ros',
+    #   executable='spawn_entity.py',
+    #   parameters=
+    # )
+    
+    gazebo_robot_spawner = ExecuteProcess(
+            cmd=['ros2', 'service', 'call', '/spawn_entity',
+                 'gazebo_msgs/SpawnEntity', swpan_args],
+            output='screen'),
+    
     # node_list.append(joint_state_spawner)
-    node_list.append(controller_manager)
+    # node_list.append(gazebo_robot_spawner[0])
+    # node_list.append(controller_manager)
     
     # Group for RViz and related configurations
     rviz_group = GroupAction(
@@ -120,7 +138,6 @@ def generate_launch_description():
     )
     
     node_list.append(rviz_group)
-    print(node_list)
     return LaunchDescription(
       launch_arguments 
       + node_list)
