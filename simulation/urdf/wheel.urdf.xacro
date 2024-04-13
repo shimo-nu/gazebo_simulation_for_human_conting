@@ -2,19 +2,22 @@
 <robot name="wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <!-- Wheels -->
-  <property name="wheel_radius" value="0.2" />
-  <property name="wheel_height" value="0.1" />
-  <property name="wheel_mass" value="1.5" /> <!-- in kg-->
+  <xacro:property name="wheel_radius" value="0.2" />
+  <xacro:property name="wheel_height" value="0.1" />
+  <xacro:property name="wheel_mass" value="1.5" /> <!-- in kg-->
 
-  <property name="base_x_origin_to_wheel_origin" value="0.25" />
-  <property name="base_y_origin_to_wheel_origin" value="0.3" />
-  <property name="base_z_origin_to_wheel_origin" value="0.0" />
+  <xacro:property name="base_x_origin_to_wheel_origin" value="0.25" />
+  <xacro:property name="base_y_origin_to_wheel_origin" value="0.3" />
+  <xacro:property name="base_z_origin_to_wheel_origin" value="0.0" />
 
-  <macro name="cylinder_inertia" params="m r h">
+  <xacro:property name="M_PI" value="3.1415926535897931" />
+
+
+  <xacro:macro name="cylinder_inertia" params="m r h">
     <inertia  ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0"
               iyy="${m*(3*r*r+h*h)/12}" iyz = "0"
               izz="${m*r*r/2}" />
-  </macro>
+  </xacro:macro>
 
   <xacro:macro name="wheel" params="fb lr parent translateX translateY flipY"> <!--fb : front, back ; lr: left, right -->
     <link name="${fb}_${lr}_wheel">
@@ -34,7 +37,7 @@
       <inertial>
         <mass value="${wheel_mass}" />
         <origin xyz="0 0 0" />
-        <cylinder_inertia  m="${wheel_mass}" r="${wheel_radius}" h="${wheel_height}" />
+        <xacro:cylinder_inertia  m="${wheel_mass}" r="${wheel_radius}" h="${wheel_height}" />
       </inertial>
     </link>
 
@@ -48,6 +51,7 @@
       <turnGravityOff>false</turnGravityOff>
     </gazebo>
 
+    <!-- <ros2_control name="SkidSteerDriveController" type="system"> -->
     <joint name="${fb}_${lr}_wheel_joint" type="continuous">
       <parent link="${parent}"/>
       <child link="${fb}_${lr}_wheel"/>
@@ -68,6 +72,6 @@
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
-
+    <!-- </ros2_control> -->
   </xacro:macro>
 </robot>
