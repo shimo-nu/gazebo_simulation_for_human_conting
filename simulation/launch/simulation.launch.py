@@ -119,7 +119,7 @@ def generate_launch_description():
             output='screen'),
     
     # node_list.append(joint_state_spawner)
-    # node_list.append(gazebo_robot_spawner[0])
+    node_list.append(gazebo_robot_spawner[0])
     # node_list.append(controller_manager)
     
     # Group for RViz and related configurations
