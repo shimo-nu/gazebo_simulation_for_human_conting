@@ -60,7 +60,7 @@
         <kinematic>0</kinematic>
       </link>
     </model>
-      <actor name="actor0">
+    <actor name="actor0">
       <static>true</static>
       <skin>
         <filename>walk.dae</filename>
@@ -99,6 +99,127 @@
           <waypoint>
             <time>37.5</time>
             <pose>6 1.1 0 0 0 -3.14</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <actor name="actor1_1">
+      <skin>
+        <filename>stand.dae</filename>
+      </skin>
+      <script>
+        <ignore_obstacles>
+          <model>ground_plane</model>
+          <model>actor0_collision_model</model>
+          <model>pillar</model>
+        </ignore_obstacles>
+        <trajectory id="0" type="walking">
+          <waypoint>
+            <time>10</time>
+            <pose>-1 2 0 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>10</time>
+            <pose>-1 2 0 0 0 0</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+    <actor name="actor1_2">
+      <skin>
+        <filename>stand.dae</filename>
+      </skin>
+      <script>
+        <ignore_obstacles>
+          <model>ground_plane</model>
+          <model>actor0_collision_model</model>
+          <model>pillar</model>
+        </ignore_obstacles>
+        <trajectory id="0" type="walking">
+          <waypoint>
+            <time>10</time>
+            <pose>-1 5 0 0 0 3.14</pose>
+          </waypoint>
+          <waypoint>
+            <time>10</time>      
+            <pose>-1 5 0 0 0 3.14</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+
+    <actor name="actor2_1">
+      <static>true</static>
+      <skin>
+        <filename>talk_a.dae</filename>
+      </skin>
+      <script>
+        <ignore_obstacles>
+          <model>ground_plane</model>
+          <model>actor0_collision_model</model>
+          <model>pillar</model>
+        </ignore_obstacles>
+        <trajectory id="0" type="walking">
+          <waypoint>
+            <time>100</time>
+            <pose>-4.2 3 0 0 0 1.04</pose>
+          </waypoint>
+          <waypoint>
+            <time>100</time>      
+            <pose>-4.2 3 0 0 0 1.04</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+
+    <actor name="actor2_2">
+      <static>true</static>
+      <skin>
+        <filename>talk_b.dae</filename>
+      </skin>
+      <script>
+        <ignore_obstacles>
+          <model>ground_plane</model>
+          <model>actor0_collision_model</model>
+          <model>pillar</model>
+        </ignore_obstacles>
+        <trajectory id="0" type="walking">
+          <waypoint>
+            <time>100</time>
+            <pose>-4 4.5 0 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>100</time>      
+            <pose>-4 4.5 0 0 0 0</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor>
+
+
+    <actor name="actor2_3">
+      <static>true</static>
+      <skin>
+        <filename>stand.dae</filename>
+      </skin>
+      <script>
+        <ignore_obstacles>
+          <model>ground_plane</model>
+          <model>actor0_collision_model</model>
+          <model>pillar</model>
+        </ignore_obstacles>
+        <trajectory id="0" type="walking">
+          <waypoint>
+            <time>100</time>
+            <pose>-5.7 4.2 0 0 -0.52</pose>
+          </waypoint>
+          <waypoint>
+            <time>100</time>      
+            <pose>-5.7 4.2 0 0 -0.52</pose>
           </waypoint>
         </trajectory>
       </script>
