@@ -115,8 +115,7 @@ def generate_launch_description():
     
     gazebo_robot_spawner = ExecuteProcess(
             cmd=['ros2', 'service', 'call', '/spawn_entity',
-                 'gazebo_msgs/SpawnEntity', swpan_args],
-            output='screen'),
+                 'gazebo_msgs/SpawnEntity', swpan_args]),
     
     # node_list.append(joint_state_spawner)
     node_list.append(gazebo_robot_spawner[0])
@@ -129,9 +128,9 @@ def generate_launch_description():
             Node(
                 package='rviz2',
                 executable='rviz2',
-                output='screen',
+                # output='screen',
                 arguments=['-d', PathJoinSubstitution([
-                    FindPackageShare('journal1-sim'), 'rviz', 'simulation.rviz'
+                    FindPackageShare('journal1-sim'), 'rviz', 'simulation_ros2.rviz'
                 ])]
             )
         ]
