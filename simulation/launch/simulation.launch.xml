@@ -20,4 +20,11 @@
         <arg name="verbose" value="$(var verbose)" />
         <arg name="world_name" value="$(var world_name)" />
     </include>
+    
+    <node pkg="joy" exec="joy_node" output="screen"/>
+
+    <node pkg="journal1-sim" exec="journal1-sim" output="screen">
+        <param name="gain_linear_x" value="0.5"/>
+        <param name="gain_angular_z" value="1.0"/>
+    </node>
 </launch>
