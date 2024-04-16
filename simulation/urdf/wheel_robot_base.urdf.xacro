@@ -17,6 +17,8 @@
   <xacro:property name="wheel_radius" value="0.2" />
   <xacro:property name="base_z_origin_to_wheel_origin" value="0.0" />
 
+  <xacro:property name="height_joint_imu"         value="${base_y_size+0.020}"/>
+
 
   <!--Inertial macros for the box and cylinder. Units are kg*m^2-->
   <xacro:macro name="box_inertia" params="m x y z">
@@ -144,6 +146,34 @@
   <xacro:VLP-16 parent="base_link" name="velodyne" topic="/points_raw" hz="10" samples="440" gpu="${gpu}">
     <origin xyz="0 0 0.4" rpy="0 0 0" />
   </xacro:VLP-16>
+
+
+  <!-- imu_link -->
+  <link  name="imu_link"/>
+  <joint name="joint_imu" type="fixed">
+      <parent link="base_link"/>
+      <child  link="imu_link"/>
+      <origin xyz="0 0.02 ${height_joint_imu}" rpy="${radians(0)} ${radians(0)} 0"/>
+  </joint>
+  <gazebo reference="imu_link">
+      <gravity>true</gravity>
+      <sensor name="imu_sensor" type="imu">
+          <always_on>true</always_on>
+          <update_rate>100</update_rate>
+          <visualize>true</visualize>
+          <topic>data</topic>
+          <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+              <topicName>imu/raw</topicName>
+              <bodyName>imu_link</bodyName>
+              <updateRateHZ>10.0</updateRateHZ>
+              <gaussianNoise>0.0</gaussianNoise>
+              <xyzOffset>0 0 0</xyzOffset>
+              <rpyOffset>0 0 0</rpyOffset>
+              <frameName>imu_link</frameName>
+          </plugin>
+          <pose>0 0 0 0 0 0</pose>
+      </sensor>
+  </gazebo>
 
 
 </robot>
