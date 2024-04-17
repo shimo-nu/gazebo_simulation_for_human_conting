@@ -36,36 +36,9 @@ def generate_launch_description():
 
 
     xml = robot_description_content.replace('"', '\\"')
+    spawn_args = '{name: \"my_robot\", xml: \"' + xml + '\" }'
 
-    swpan_args = '{name: \"my_robot\", xml: \"' + xml + '\" }'
 
-
-    # Load xacro
-    # robot_description = Command([
-    #     PathJoinSubstitution([FindExecutable(name='xacro')]),
-    #     ' --inorder ',
-    #     PathJoinSubstitution([FindPackageShare('journal1-sim'), 'urdf', 'wheel_robot_base.urdf.xacro']),
-    #     ' gpu:=', LaunchConfiguration('gpu')
-    # ])
-
-    
-
-    # Include the Gazebo launch file
-    # gazebo_launch = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         PathJoinSubstitution([FindPackageShare('gazebo_ros'), 'launch', 'empty_world.launch.py'])
-    #     ),
-    #     launch_arguments={
-    #         'paused': LaunchConfiguration('paused'),
-    #         'use_sim_time': LaunchConfiguration('use_sim_time'),
-    #         'gui': LaunchConfiguration('gui'),
-    #         'headless': LaunchConfiguration('headless'),
-    #         'debug': LaunchConfiguration('debug'),
-    #         'verbose': LaunchConfiguration('verbose'),
-    #         'world_name': LaunchConfiguration('world_name'),
-    #     }.items()
-    # )
-    
     gzserver_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_gazebo_ros, 'launch', 'gzserver.launch.py')
@@ -115,7 +88,7 @@ def generate_launch_description():
     
     gazebo_robot_spawner = ExecuteProcess(
             cmd=['ros2', 'service', 'call', '/spawn_entity',
-                 'gazebo_msgs/SpawnEntity', swpan_args]),
+                 'gazebo_msgs/SpawnEntity', spawn_args]),
     
     # node_list.append(joint_state_spawner)
     node_list.append(gazebo_robot_spawner[0])
