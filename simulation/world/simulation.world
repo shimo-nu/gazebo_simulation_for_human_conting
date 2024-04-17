@@ -78,11 +78,11 @@
         <trajectory id="0" type="walking">
           <waypoint>
             <time>0</time>
-            <pose>6 1.1 0 0 0 3.14</pose>
+            <pose>6 0.6 0 0 0 3.14</pose>
           </waypoint>
           <waypoint>
             <time>25</time>
-            <pose>-9 1.1 0 0 0 3.14</pose>
+            <pose>-9 0.6 0 0 0 3.14</pose>
           </waypoint>
           <waypoint>
             <time>27.5</time>
@@ -183,9 +183,6 @@
       </skin>
       <script>
         <ignore_obstacles>
-          <model>ground_plane</model>
-          <model>actor0_collision_model</model>
-          <model>pillar</model>
         </ignore_obstacles>
         <trajectory id="0" type="walking">
           <waypoint>
