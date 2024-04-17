@@ -5,6 +5,7 @@
 class JoyTwistPublisher : public rclcpp::Node
 {
 public:
+
   JoyTwistPublisher() : Node("joy_twist_publisher")
   {
     // Joyノードからのデータを受け取るサブスクライバを作成
@@ -20,8 +21,7 @@ public:
     angular_z_ = 0.0;
 
 
-    double gain_linear_x_ = 0.5;
-    double gain_angular_z_ = 0.5;
+    
     declare_parameter("gain_linear_x", 0.0);
     declare_parameter("gain_angular_z", 0.0);
     get_parameter("gain_linear_x", gain_linear_x_);
@@ -34,6 +34,10 @@ public:
   }
 
 private:
+
+  double gain_linear_x_;
+  double gain_angular_z_;
+
   void joyCallback(const sensor_msgs::msg::Joy::SharedPtr joy_msg)
   {
     // Joyスティックの値に応じてパラメータを設定
