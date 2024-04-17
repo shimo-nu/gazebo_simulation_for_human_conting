@@ -19,7 +19,7 @@
               izz="${m*r*r/2}" />
   </xacro:macro>
 
-  <xacro:macro name="wheel" params="fb lr parent translateX translateY flipY"> <!--fb : front, back ; lr: left, right -->
+  <xacro:macro name="wheel" params="fb lr parent translateX translateY flipY"> <!--fb , front, back ; lr, left, right -->
     <link name="${fb}_${lr}_wheel">
       <visual>
         <origin xyz="0 0 0" rpy="${flipY*M_PI/2} 0 0" />
