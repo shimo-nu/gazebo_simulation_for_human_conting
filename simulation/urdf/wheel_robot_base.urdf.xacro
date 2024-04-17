@@ -143,8 +143,8 @@
     <origin xyz="0 0 0.4" rpy="0 0 0" />
   </xacro:VLP-16> -->
   <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
-  <xacro:VLP-16 parent="base_link" name="velodyne" topic="/points_raw" hz="10" samples="440" gpu="${gpu}">
-    <origin xyz="0 0 0.4" rpy="0 0 0" />
+  <xacro:VLP-16 parent="base_link" name="velodyne" topic="/sensing/lidar/concatenated/pointcloud" hz="10" samples="440" gpu="${gpu}">
+    <origin xyz="0 0 0.7" rpy="0 0 0" />
   </xacro:VLP-16>
 
 
@@ -163,6 +163,10 @@
           <visualize>true</visualize>
           <topic>data</topic>
           <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+              <ros>
+                <namespace>/sensing</namespace>
+                <remapping>~/out:=imu/data</remapping>
+              </ros>
               <topicName>imu/raw</topicName>
               <bodyName>imu_link</bodyName>
               <updateRateHZ>10.0</updateRateHZ>
