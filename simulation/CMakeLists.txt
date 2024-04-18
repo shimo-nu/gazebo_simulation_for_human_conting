@@ -10,6 +10,9 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(visualization_msgs REQUIRED)
+
+find_package(autoware_auto_perception_msgs REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -30,10 +33,24 @@ add_executable(${PROJECT_NAME}
   src/joy_twist_publisher.cpp
 )
 
+add_executable(receive_detected_object_node
+  src/receive_detected_objects.cpp
+)
+
+add_executable(visualize_marker_of_objects_node
+  src/visualize_marker_of_objects.cpp
+)
+
 ament_target_dependencies(${PROJECT_NAME} rclcpp sensor_msgs geometry_msgs)
+
+ament_target_dependencies(receive_detected_object_node rclcpp autoware_auto_perception_msgs sensor_msgs geometry_msgs)
+
+ament_target_dependencies(visualize_marker_of_objects_node rclcpp autoware_auto_perception_msgs sensor_msgs visualization_msgs)
 
 install(TARGETS
   ${PROJECT_NAME}
+  receive_detected_object_node
+  visualize_marker_of_objects_node
   DESTINATION lib/${PROJECT_NAME}
 )
 install(DIRECTORY
