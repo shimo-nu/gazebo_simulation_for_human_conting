@@ -1,0 +1,325 @@
+<?xml version="1.0"?>
+<!-- eisuu moji only , fukusu gyo comment ng -->
+<robot name="smagv" xmlns:xacro="http://ros.org/wiki/xacro">
+    <!-- ******************************************************************* -->
+    <!-- config                                                              -->
+    <!-- ******************************************************************* -->
+    <!-- model_img_type -->
+    <xacro:property name="model_img_type"           value="stl"/><!-- stl or dae -->
+
+    <!-- base_type -->
+    <xacro:property name="base_type"                value="0"/><!-- 0:base_link  1:base_footprint -->
+
+    <xacro:property name="base_type_baselink"       value="0"/>
+    <xacro:property name="model_img_body"           value="$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208_downsampling.${model_img_type}"/>
+    <!-- <xacro:property name="model_img_body"           value="$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208.${model_img_type}"/> -->
+    <xacro:property name="base_height"              value="0"/>                                                                 <!-- -->
+    <xacro:property name="base_height_gap"          value="${wh_radius}"/>                                                      <!-- -->
+
+    <xacro:property name="base_type_footprint"      value="1"/>
+    <!--<xacro:property name="model_img_body"           value="package://smagv_common/vehicle/mesh/footprint/AGV0208FT.${model_img_type}"/> -->
+    <!--<xacro:property name="base_height"              value="${wh_radius}"/>                                                              -->
+    <!--<xacro:property name="base_height_gap"          value="0"/>                                                                         -->
+
+    <!-- laser_sensor_type -->
+    <xacro:property name="laser_sensor_type"        value="1"/>
+    <xacro:property name="laser_sensor_type_2D"     value="0"/><!-- HOKUYO              -->
+    <xacro:property name="laser_sensor_type_3D"     value="1"/><!-- Velodyne            -->
+    <xacro:property name="laser_sensor_type_2D_3D"  value="2"/><!-- HOKUYO and Velodyne -->
+
+    <!-- ******************************************************************* -->
+    <!-- property                                                            -->
+    <!-- ******************************************************************* -->
+
+    <!-- ******************************************************************* -->
+    <!-- model image                                                         -->
+    <!-- ******************************************************************* -->
+    <!-- <xacro:if value="${base_type == base_type_baselink}">                                                                          -->
+    <!--     <xacro:property name="model_img_body"   value="$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208.${model_img_type}"/>       -->
+    <!-- </xacro:if>                                                                                                                    -->
+    <!-- <xacro:if value="${base_type != base_type_baselink}">                                                                          -->
+    <!--     <xacro:property name="model_img_body"   value="$(find journal1-sim)/urdf/smagv/mesh/footprint/AGV0208FT.${model_img_type}"/>-->
+    <!-- </xacro:if>                                                                                                                    -->
+    <xacro:property name="model_img_wheel_l"    value="$(find journal1-sim)/urdf/smagv/mesh/AGV_WHL_L.${model_img_type}"/>
+    <xacro:property name="model_img_wheel_r"    value="$(find journal1-sim)/urdf/smagv/mesh/AGV_WHL_R.${model_img_type}"/>
+    <xacro:property name="model_img_velodyne"   value="$(find journal1-sim)/urdf/smagv/mesh/VLP16.${model_img_type}"/>
+
+    <!-- ******************************************************************* -->
+    <!-- spec , kansei moment                                                -->
+    <!-- ******************************************************************* -->
+    <!-- wheel spec , kansei moment (kari) -->
+    <xacro:property name="wh_radius"  value="0.195"/><!-- radius -->
+    <xacro:property name="wh_length"  value="0.044"/><!-- length -->
+    <xacro:property name="wheel_mass" value="7.0"/>
+    <xacro:property name="wheel_ixx"  value="${(wheel_mass*(3*(wh_radius**2)+(wh_length**2)))/12.0}"/>
+    <xacro:property name="wheel_iyy"  value="${wheel_ixx}"/>
+    <xacro:property name="wheel_izz"  value="${(wheel_mass*(wh_length**2))/2.0}"/>
+
+    <!-- hight -->
+    <!-- <xacro:if value="${base_type == base_type_baselink}">                  -->
+    <!--     <xacro:property name="base_height"          value="0"/>            -->
+    <!--     <xacro:property name="base_height_gap"      value="${wh_radius}"/> -->
+    <!-- </xacro:if>                                                            -->
+    <!-- <xacro:if value="${base_type != base_type_baselink}">                  -->
+    <!--     <xacro:property name="base_height"          value="${wh_radius}"/> -->
+    <!--     <xacro:property name="base_height_gap"      value="0"/>            -->
+    <!-- </xacro:if>                                                            -->
+
+    <xacro:property name="height_joint_base_link"   value="${base_height}"/>
+    <xacro:property name="height_joint_wheel"       value="${base_height_gap}"/>
+    <xacro:property name="height_joint_2d_laser"    value="${base_height_gap+0.186}"/>
+    <xacro:property name="height_joint_velodyne"    value="${base_height_gap+0.770}"/>
+    <xacro:property name="height_joint_camera"      value="${base_height_gap+0.045}"/>
+    <xacro:property name="height_joint_imu"         value="${base_height_gap+0.020}"/>
+
+    <!-- base spec , kansei moment (kari) -->
+    <xacro:property name="bs_d"  value="0.890"/>                <!-- Front - Rear -->
+    <xacro:property name="bs_w"  value="0.410"/>                <!-- Left - Right -->
+    <xacro:property name="bs_h"  value="${0.483-base_height}"/> <!-- Hight        -->
+
+    <xacro:property name="base_mass" value="${25.0-(wheel_mass*2)}"/>
+    <xacro:property name="base_ixx"  value="${(base_mass*(bs_w**2+bs_h**2))/12}"/>
+    <xacro:property name="base_iyy"  value="${(base_mass*(bs_d**2+bs_h**2))/12}"/>
+    <xacro:property name="base_izz"  value="${(base_mass*(bs_d**2+bs_w**2))/12}"/>
+
+    <!-- ******************************************************************* -->
+    <!-- misc                                                                -->
+    <!-- ******************************************************************* -->
+    <xacro:property name="camera_yaw"         value="${radians(5)}"/>   <!-- camera yaw -->
+    <xacro:property name="camera_pitch"       value="${radians(-12)}"/> <!-- camera gyoukaku -->
+    <xacro:property name="imu_roll"           value="${radians(0)}"/>   <!-- imu roll -->
+    <xacro:property name="imu_pitch"          value="${radians(0)}"/>   <!-- imu gyoukaku -->
+
+    <!-- ******************************************************************* -->
+    <!-- material                                                            -->
+    <!-- ******************************************************************* -->
+    <material name="white">
+        <color rgba="1 1 1 1"/>
+    </material>
+
+    <material name="yellow">
+        <color rgba="1 1 0 0"/>
+    </material>
+
+    <material name="blue">
+        <color rgba="0 0 0.7 1"/>
+    </material>
+
+    <material name="green">
+        <color rgba="0 0.7 0 1"/>
+    </material>
+
+    <material name="red">
+        <color rgba="0.5 0 0 1"/>
+    </material>
+
+    <material name="black">
+        <color rgba="0.2 0.2 0.2 1"/>
+    </material>
+
+    <material name="grey">
+        <color rgba="0.75 0.75 0.75 1"/>
+    </material>
+
+    <!-- ******************************************************************* -->
+    <!-- macro                                                               -->
+    <!-- ******************************************************************* -->
+    <!-- wheel_macro -->
+    <!-- <xacro:macro name="wheel_macro" params="prefix parent xyz rpy model_img">
+        <link name="${prefix}_link">
+            <visual name="${prefix}_visual">
+                <geometry>
+                    <mesh filename="${model_img}" />
+                </geometry>
+                <material name="white"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <cylinder length="${wh_length}" radius="${wh_radius}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="${wheel_mass}"/>
+                <inertia ixx="${wheel_ixx}" ixy="0" ixz="0" iyy="${wheel_iyy}" iyz="0" izz="${wheel_izz}"/>
+            </inertial>
+        </link>
+        <joint name="joint_${prefix}" type="continuous">
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <parent link="${parent}"/>
+            <child  link="${prefix}_link"/>
+            <axis xyz="0 0 1" />
+        </joint>
+    </xacro:macro> -->
+
+    <xacro:macro name="wheel_macro" params="prefix parent xyz rpy model_img">
+        <link name="${prefix}_link">
+            <visual name="${prefix}_visual">
+                <geometry>
+                    <cylinder length="${wh_length}" radius="${wh_radius}"/> 
+                    <!-- <mesh filename="${model_img}" /> -->
+                </geometry>
+                <material name="white"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <cylinder length="${wh_length}" radius="${wh_radius}"/> 
+                    <!-- <mesh filename="${model_img}" /> -->
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="${wheel_mass}"/>
+                <inertia ixx="${wheel_ixx}" ixy="0" ixz="0" iyy="${wheel_iyy}" iyz="0" izz="${wheel_izz}"/>
+            </inertial>
+        </link>
+
+        <joint name="joint_${prefix}" type="continuous">
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <parent link="${parent}"/>
+            <child  link="${prefix}_link"/>
+            <axis xyz="0 0 1" />
+            <!--<limit velocity="6.0" effort="30.0"/>effort="${wheel_effort}" />-->
+            <!--<dynamics damping="0.1"/>-->
+        </joint>
+
+        <transmission name="${prefix}_trans">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="joint_${prefix}">
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${prefix}_motor">
+                <hazrdwareInterface>hardware_interface/VelocityJointInterface</hazrdwareInterface>
+                <mechanismReduction>1</mechanismReduction>
+            </actuator>
+        </transmission>
+
+        <gazebo reference="${prefix}_link">
+            <mu1 value="2.5" />
+            <mu2 value="2.5" />
+            <kp  value="10000000.0" />
+            <kd  value="1.0" />
+        </gazebo>
+    </xacro:macro>
+    <ros2_control name="GazeboSystem" type="system">
+        <hardware>
+            <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </hardware>
+        <joint name="joint_left_wheel">
+            <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="joint_right_wheel">
+            <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+    </ros2_control>
+    <gazebo>
+        <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+            <robot_param>robot_description</robot_param>
+            <robot_param_node>robot_state_publisher</robot_param_node>
+            <parameters>$(find journal1-sim)/config/diff_drive_ros2_control_controllers.yaml</parameters>
+        
+        </plugin>
+    </gazebo>
+
+    <!-- ******************************************************************* -->
+    <!-- link , joint                                                        -->
+    <!-- ******************************************************************* -->
+    <!-- base_footprint -->
+    <xacro:if value="${base_type != base_type_baselink}">
+        <link name="base_footprint">
+            <inertial>
+                <mass value="0.0001" />
+                <origin xyz="0 0 0" />
+                <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001" />
+            </inertial>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <box size="0.001 0.001 0.001" />
+                </geometry>
+            </visual>
+        </link>
+    </xacro:if>
+
+    <!-- base_link -->
+    <link name="base_link">
+        <visual name="base_visual">
+            <geometry>
+                <mesh filename="${model_img_body}" />
+                <!-- <box size="1 0.5 0.25"/> -->
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <material name="white"/>
+        </visual>
+        <collision>
+            <geometry>
+                <mesh filename="${model_img_body}" />
+                <!-- <box size="1 0.5 0.25"/> -->
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="${base_mass}"/>
+            <inertia ixx="${base_ixx}" ixy="0" ixz="0" iyy="${base_iyy}" iyz="0" izz="${base_izz}"/>
+        </inertial>
+    </link>
+    <xacro:if value="${base_type != base_type_baselink}">
+        <joint name="joint_base_link" type="fixed">
+            <parent link="base_footprint"/>
+            <child  link="base_link"/>
+            <origin xyz="0 0 ${height_joint_base_link}"/>
+        </joint>
+    </xacro:if>
+
+    <!-- wheel -->
+    <xacro:wheel_macro prefix="left_wheel"  parent="base_link" xyz="0 0.161 ${height_joint_wheel}"  rpy="${radians(-90)} 0 0" model_img="${model_img_wheel_l}"/>
+    <xacro:wheel_macro prefix="right_wheel" parent="base_link" xyz="0 -0.161 ${height_joint_wheel}" rpy="${radians(-90)} 0 0" model_img="${model_img_wheel_r}"/>
+
+
+    <!-- VLP-16 on Gazebo -->
+    <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
+    <xacro:VLP-16 parent="base_link" name="velodyne" topic="/sensing/lidar/concatenated/pointcloud" hz="10" samples="440" gpu="true">
+
+        <!-- <origin xyz="0.535 0 ${height_joint_velodyne}" rpy="0 0 0"/> -->
+        <origin xyz="0.232 0 ${height_joint_velodyne}" rpy="0 0 0"/>
+    </xacro:VLP-16>
+
+    <!-- camera_link -->
+    <link  name="camera_link"/>
+    <joint name="joint_camera" type="fixed">
+        <parent link="base_link"/>
+        <child  link="camera_link"/>
+        <origin xyz="0.540 0.02 ${height_joint_camera}" rpy="0 ${camera_pitch} ${camera_yaw}"/>
+    </joint>
+
+    <!-- imu_link -->
+    <link  name="imu_link"/>
+    <joint name="joint_imu" type="fixed">
+        <parent link="base_link"/>
+        <child  link="imu_link"/>
+        <origin xyz="0 0.02 ${height_joint_imu}" rpy="${imu_roll} ${imu_pitch} 0"/>
+    </joint>
+    <gazebo reference="imu_link">
+        <gravity>true</gravity>
+        <sensor name="imu_sensor" type="imu">
+            <always_on>true</always_on>
+            <update_rate>100</update_rate>
+            <visualize>true</visualize>
+            <topic>data</topic>
+            <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+                <topicName>imu/data</topicName>
+                <bodyName>imu_link</bodyName>
+                <updateRateHZ>10.0</updateRateHZ>
+                <gaussianNoise>0.0</gaussianNoise>
+                <xyzOffset>0 0 0</xyzOffset>
+                <rpyOf7fset>0 0 0</rpyOf7fset>
+                <frameName>imu_link</frameName>
+            </plugin>
+            <pose>0 0 0 0 0 0</pose>
+        </sensor>
+    </gazebo>
+</robot>

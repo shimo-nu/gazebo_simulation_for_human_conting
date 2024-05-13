@@ -29,6 +29,7 @@ private:
     // VehicleControlCommandメッセージを受信したときの処理
 
     RCLCPP_INFO(this->get_logger(), "Received VehicleControlCommand:");
+    RCLCPP_INFO(this->get_logger(), "Frame ID ; %s", msg->header.frame_id);
     for (size_t i = 0; i < msg->objects.size(); ++i)
     {
       const auto& object = msg->objects[i];
@@ -39,11 +40,12 @@ private:
       const std::string uuid_str = ss.str();
 
       RCLCPP_INFO(this->get_logger(), "object_id : 0x%04X", object.object_id.uuid);
+      RCLCPP_INFO(this->get_logger(), "object_id : %f,%f", object.kinematics.pose_with_covariance.pose.position.x, object.kinematics.pose_with_covariance.pose.position.y);
       dataToSave_.emplace_back(std::make_tuple(uuid_str, msg->header.stamp.sec , msg->header.stamp.nanosec, 
         object.kinematics.pose_with_covariance.pose.position.x,
         object.kinematics.pose_with_covariance.pose.position.y,
         object.kinematics.pose_with_covariance.pose.position.z));
-       
+      
     }
   }
 
