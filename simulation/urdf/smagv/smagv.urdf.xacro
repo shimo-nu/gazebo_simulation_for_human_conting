@@ -11,8 +11,9 @@
     <xacro:property name="base_type"                value="0"/><!-- 0:base_link  1:base_footprint -->
 
     <xacro:property name="base_type_baselink"       value="0"/>
-    <xacro:property name="model_img_body"           value="$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208_downsampling.${model_img_type}"/>
-    <!-- <xacro:property name="model_img_body"           value="$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208.${model_img_type}"/> -->
+    <xacro:property name="model_img_body"           value="file://$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208_downsampling_nocaster.${model_img_type}"/>
+    <xacro:property name="model_img_caster"           value="file://$(find journal1-sim)/urdf/smagv/mesh/base/caster.${model_img_type}"/>
+    <!-- <xacro:property name="model_img_body"           value="file://$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208.${model_img_type}"/> -->
     <xacro:property name="base_height"              value="0"/>                                                                 <!-- -->
     <xacro:property name="base_height_gap"          value="${wh_radius}"/>                                                      <!-- -->
 
@@ -35,14 +36,14 @@
     <!-- model image                                                         -->
     <!-- ******************************************************************* -->
     <!-- <xacro:if value="${base_type == base_type_baselink}">                                                                          -->
-    <!--     <xacro:property name="model_img_body"   value="$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208.${model_img_type}"/>       -->
+    <!--     <xacro:property name="model_img_body"   value="file://$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208.${model_img_type}"/>       -->
     <!-- </xacro:if>                                                                                                                    -->
     <!-- <xacro:if value="${base_type != base_type_baselink}">                                                                          -->
-    <!--     <xacro:property name="model_img_body"   value="$(find journal1-sim)/urdf/smagv/mesh/footprint/AGV0208FT.${model_img_type}"/>-->
+    <!--     <xacro:property name="model_img_body"   value="file://$(find journal1-sim)/urdf/smagv/mesh/footprint/AGV0208FT.${model_img_type}"/>-->
     <!-- </xacro:if>                                                                                                                    -->
-    <xacro:property name="model_img_wheel_l"    value="$(find journal1-sim)/urdf/smagv/mesh/AGV_WHL_L.${model_img_type}"/>
-    <xacro:property name="model_img_wheel_r"    value="$(find journal1-sim)/urdf/smagv/mesh/AGV_WHL_R.${model_img_type}"/>
-    <xacro:property name="model_img_velodyne"   value="$(find journal1-sim)/urdf/smagv/mesh/VLP16.${model_img_type}"/>
+    <xacro:property name="model_img_wheel_l"    value="file://$(find journal1-sim)/urdf/smagv/mesh/AGV_WHL_L.${model_img_type}"/>
+    <xacro:property name="model_img_wheel_r"    value="file://$(find journal1-sim)/urdf/smagv/mesh/AGV_WHL_R.${model_img_type}"/>
+    <xacro:property name="model_img_velodyne"   value="file://$(find journal1-sim)/urdf/smagv/mesh/VLP16.${model_img_type}"/>
 
     <!-- ******************************************************************* -->
     <!-- spec , kansei moment                                                -->
@@ -275,10 +276,70 @@
         </joint>
     </xacro:if>
 
+    <xacro:macro name="caster" params="prefix parent xyz rpy model_img">
+        <!-- caster_support -->
+        <link name="${prefix}_caster_support">
+            <visual>
+                <geometry>
+                    <box size="0.01 0.01 0.01"/>
+                    <!-- <mesh filename="${model_img_caster}" /> -->
+                </geometry>
+                <!-- <origin xyz="0.44 0.15 0.21" rpy="0 0 0"/> -->
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <material name="grey"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <box size="0.01 0.01 0.01"/>
+                    <!-- <mesh filename="${model_img_caster}" /> -->
+                </geometry>
+                <!-- <origin xyz="0.44 0.15 0.21" rpy="0 0 0"/> -->
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+            </collision>
+        </link>
+
+        <joint name="${prefix}_caster_support_joint" type="continuous">
+            <axis xyz="0 1 0"/>
+            <parent link="${parent}"/>
+            <child link="${prefix}_caster_support"/>
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+        </joint>
+
+        <link name="${prefix}_caster_wheel">
+            <visual>
+            <geometry>
+                <!-- <cylinder length="0.005" radius="0.02"/> -->
+                <mesh filename="${model_img_caster}" />
+            </geometry>
+            <!-- <material name="black"/> -->
+            </visual>
+            <collision>
+            <geometry>
+                <!-- <cylinder length="0.005" radius="0.02"/> -->
+                <mesh filename="${model_img_caster}" />
+            </geometry>
+            </collision>
+        </link>
+
+        <joint name="${prefix}_caster_wheel_joint" type="fixed">
+            <!-- <axis xyz="0 1 0"/> -->
+            <parent link="${prefix}_caster_support"/>
+            <child link="${prefix}_caster_wheel"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </joint>
+
+
+    </xacro:macro>
+
+
     <!-- wheel -->
     <xacro:wheel_macro prefix="left_wheel"  parent="base_link" xyz="0 0.161 ${height_joint_wheel}"  rpy="${radians(-90)} 0 0" model_img="${model_img_wheel_l}"/>
     <xacro:wheel_macro prefix="right_wheel" parent="base_link" xyz="0 -0.161 ${height_joint_wheel}" rpy="${radians(-90)} 0 0" model_img="${model_img_wheel_r}"/>
 
+
+    <!-- caster -->
+    <xacro:caster prefix="right" parent="base_link" xyz="0.44 0.15 0.21" rpy="${radians(-90)} 0 0" model_img="${model_img_caster}"/>
+    <xacro:caster prefix="left" parent="base_link" xyz="0.44 -0.15 0.21" rpy="${radians(-90)} 0 0" model_img="${model_img_caster}"/>
 
     <!-- VLP-16 on Gazebo -->
     <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>

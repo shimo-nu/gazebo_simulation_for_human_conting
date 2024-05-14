@@ -1,5 +1,5 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction, SetLaunchConfiguration, LogInfo, ExecuteProcess
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction, SetLaunchConfiguration, LogInfo, ExecuteProcess, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution, FindExecutable
 from launch_ros.actions import Node
@@ -48,12 +48,16 @@ def generate_launch_description():
         launch_arguments={'world': LaunchConfiguration('world_name'), 'output': 'screen'}.items()
     )
 
+    
+    
     gzclient_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_gazebo_ros, 'launch', 'gzclient.launch.py')
         ),
         launch_arguments={'use_respawn': 'true'}.items()
     )
+    
+    
     
     node_list.extend([gzserver_cmd])
 
@@ -64,7 +68,15 @@ def generate_launch_description():
         parameters=[{'robot_description': robot_description_content}]
     )
     
-    node_list.append(robot_state_publisher_node)
+    joint_publisher = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        name='joint_state_publisher',
+        output='screen'
+    )
+
+    
+    node_list.extend([robot_state_publisher_node, joint_publisher])
 
     
     joint_state_spawner = Node(
@@ -115,7 +127,8 @@ def generate_launch_description():
     node_list.append(diff_drive_node)
     # node_list.append(controller_manager)
     
-    node_list.append(gzclient_cmd)
+    # node_list.append(gzclient_cmd)
+    launch_gazebo_client = lambda _: [gzclient_cmd]
     
     # Group for RViz and related configurations
     rviz_group = GroupAction(
@@ -135,4 +148,5 @@ def generate_launch_description():
     node_list.append(rviz_group)
     return LaunchDescription(
       launch_arguments 
-      + node_list)
+      + node_list
+      + [OpaqueFunction(function=launch_gazebo_client)])
