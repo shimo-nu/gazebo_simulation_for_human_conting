@@ -8,6 +8,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch.conditions import IfCondition
 
 import os
+import xacro
 
 def generate_launch_description():
     # Declare the launch arguments
@@ -31,15 +32,26 @@ def generate_launch_description():
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
 
     # Load urdf 
-    with open(os.path.join(get_package_share_directory('journal1-sim'), 'urdf', 'smagv', 'smagv.urdf'), 'r') as urdf_file:
-    # with open(os.path.join(get_package_share_directory('journal1-sim'), 'urdf', 'test.urdf'), 'r') as urdf_file:
-        robot_description_content = urdf_file.read()
+    # with open(os.path.join(get_package_share_directory('journal1-sim'), 'urdf', 'smagv', 'smagv.urdf'), 'r') as urdf_file:
+    # # with open(os.path.join(get_package_share_directory('journal1-sim'), 'urdf', 'test.urdf'), 'r') as urdf_file:
+    #     robot_description_content = urdf_file.read()
 
 
-    xml = robot_description_content.replace('"', '\\"')
+    # xml = robot_description_content.replace('"', '\\"')
+    # spawn_args = '{name: \"my_robot\", xml: \"' + xml + '\" }'
+
+
+    share_dir_path = os.path.join(get_package_share_directory('journal1-sim'))
+    xacro_path = os.path.join(share_dir_path, 'urdf', 'smagv', 'smagv.urdf.xacro')
+    urdf_path = os.path.join(share_dir_path, 'urdf', 'smagv', 'smagv.urdf')
+
+    doc = xacro.process_file(xacro_path)
+    robot_description = doc.toprettyxml(indent='  ')  
+    with open(urdf_path, 'w') as f:
+        f.write(robot_description)
+        
+    xml = robot_description.replace('"', '\\"')
     spawn_args = '{name: \"my_robot\", xml: \"' + xml + '\" }'
-
-    # print(xml)
 
     gzserver_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -65,7 +77,7 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        parameters=[{'robot_description': robot_description_content}]
+        parameters=[{'robot_description': robot_description}]
     )
     
     joint_publisher = Node(
@@ -107,7 +119,7 @@ def generate_launch_description():
     controller_manager = Node(
         package='controller_manager',
         executable='ros2_control_node',
-        parameters=[{'robot_description': robot_description_content}],
+        parameters=[{'robot_description': robot_description}],
         output='screen'
     )
     

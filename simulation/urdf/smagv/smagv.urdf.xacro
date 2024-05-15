@@ -12,7 +12,7 @@
 
     <xacro:property name="base_type_baselink"       value="0"/>
     <xacro:property name="model_img_body"           value="file://$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208_downsampling_nocaster.${model_img_type}"/>
-    <xacro:property name="model_img_caster"           value="file://$(find journal1-sim)/urdf/smagv/mesh/base/caster.${model_img_type}"/>
+    <xacro:property name="model_img_caster"         value="file://$(find journal1-sim)/urdf/smagv/mesh/base/caster_origin_joint.${model_img_type}"/>
     <!-- <xacro:property name="model_img_body"           value="file://$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208.${model_img_type}"/> -->
     <xacro:property name="base_height"              value="0"/>                                                                 <!-- -->
     <xacro:property name="base_height_gap"          value="${wh_radius}"/>                                                      <!-- -->
@@ -55,6 +55,14 @@
     <xacro:property name="wheel_ixx"  value="${(wheel_mass*(3*(wh_radius**2)+(wh_length**2)))/12.0}"/>
     <xacro:property name="wheel_iyy"  value="${wheel_ixx}"/>
     <xacro:property name="wheel_izz"  value="${(wheel_mass*(wh_length**2))/2.0}"/>
+
+    <!-- caster property -->
+    <xacro:property name="caster_radius"  value="0.074"/><!-- radius -->
+    <xacro:property name="caster_length"  value="0.03"/><!-- length -->
+    <xacro:property name="caster_mass" value="1.0"/>
+    <xacro:property name="caster_ixx" value="${(caster_mass*(3*(caster_radius**2)+(caster_length**2)))/12.0}"/>
+    <xacro:property name="caster_iyy" value="${caster_ixx}"/>
+    <xacro:property name="caster_izz" value="${(caster_mass*(caster_length**2))/2.0}"/>
 
     <!-- hight -->
     <!-- <xacro:if value="${base_type == base_type_baselink}">                  -->
@@ -279,12 +287,11 @@
     <xacro:macro name="caster" params="prefix parent xyz rpy model_img">
         <!-- caster_support -->
         <link name="${prefix}_caster_support">
-            <visual>
+            <visual name="${prefix}_visual">
                 <geometry>
                     <box size="0.01 0.01 0.01"/>
                     <!-- <mesh filename="${model_img_caster}" /> -->
                 </geometry>
-                <!-- <origin xyz="0.44 0.15 0.21" rpy="0 0 0"/> -->
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <material name="grey"/>
             </visual>
@@ -293,9 +300,13 @@
                     <box size="0.01 0.01 0.01"/>
                     <!-- <mesh filename="${model_img_caster}" /> -->
                 </geometry>
-                <!-- <origin xyz="0.44 0.15 0.21" rpy="0 0 0"/> -->
                 <origin xyz="0 0 0" rpy="0 0 0"/>
             </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.5"/>
+                <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+            </inertial>
         </link>
 
         <joint name="${prefix}_caster_support_joint" type="continuous">
@@ -305,30 +316,44 @@
             <origin xyz="${xyz}" rpy="${rpy}"/>
         </joint>
 
+
         <link name="${prefix}_caster_wheel">
             <visual>
-            <geometry>
-                <!-- <cylinder length="0.005" radius="0.02"/> -->
-                <mesh filename="${model_img_caster}" />
-            </geometry>
-            <!-- <material name="black"/> -->
+                <geometry>
+                    <cylinder length="${caster_length}" radius="${caster_radius}"/>
+                    <!-- <mesh filename="${model_img_caster}" /> -->
+                </geometry>                
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <material name="black"/>
             </visual>
             <collision>
-            <geometry>
-                <!-- <cylinder length="0.005" radius="0.02"/> -->
-                <mesh filename="${model_img_caster}" />
-            </geometry>
+                <geometry>
+                    <cylinder length="${caster_length}" radius="${caster_radius}"/>
+                    <!-- <mesh filename="${model_img_caster}" /> -->
+                </geometry>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
             </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="${caster_mass}"/>
+                <inertia ixx="${caster_ixx}" ixy="0" ixz="0" iyy="${caster_iyy}" iyz="0" izz="${caster_izz}"/>
+            </inertial>
         </link>
 
-        <joint name="${prefix}_caster_wheel_joint" type="fixed">
-            <!-- <axis xyz="0 1 0"/> -->
+        <joint name="${prefix}_caster_wheel_joint" type="continuous">
+            <axis xyz="0 0 1"/>
             <parent link="${prefix}_caster_support"/>
             <child link="${prefix}_caster_wheel"/>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0.04 0.136 0" rpy="0 0 0"/>
         </joint>
 
-
+        <gazebo reference="${prefix}_caster_wheel">
+            <mu1 value="1.0" />
+            <mu2 value="1.0" />
+            <kp  value="10000000.0" />
+            <kd  value="1.0" />
+            <material name="white"/>
+        </gazebo>
     </xacro:macro>
 
 
@@ -344,7 +369,6 @@
     <!-- VLP-16 on Gazebo -->
     <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
     <xacro:VLP-16 parent="base_link" name="velodyne" topic="/sensing/lidar/concatenated/pointcloud" hz="10" samples="440" gpu="true">
-
         <origin xyz="0.232 0 ${height_joint_velodyne}" rpy="0 0 0"/>
     </xacro:VLP-16>
 
