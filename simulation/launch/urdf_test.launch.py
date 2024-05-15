@@ -31,12 +31,19 @@ def generate_launch_description():
                                   # argumentsでURDFを出力したパスを指定
                                   arguments=[urdf_path])
     
-    joint_publisher = Node(
+    joint_state_publisher = Node(
             package='joint_state_publisher',
             executable='joint_state_publisher',
             name='joint_state_publisher',
             output='screen'
         )
+    
+    joint_state_publisher_gui = Node(
+        package='joint_state_publisher_gui',
+        executable='joint_state_publisher_gui',
+        name='joint_state_publisher_gui',
+        output='screen'
+    )
 
     rviz_group = GroupAction(
       actions=[
@@ -51,4 +58,4 @@ def generate_launch_description():
       ]
     )
 
-    return LaunchDescription([rsp, joint_publisher, rviz_group])
+    return LaunchDescription([rsp, joint_state_publisher, joint_state_publisher_gui, rviz_group])
