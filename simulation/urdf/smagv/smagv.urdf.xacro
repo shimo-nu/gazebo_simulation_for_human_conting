@@ -12,6 +12,7 @@
 
     <xacro:property name="base_type_baselink"       value="0"/>
     <xacro:property name="model_img_body"           value="file://$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208_downsampling_nocaster.${model_img_type}"/>
+    <!-- <xacro:property name="model_img_body"           value="file://$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208_downsampling.${model_img_type}"/> -->
     <xacro:property name="model_img_caster"         value="file://$(find journal1-sim)/urdf/smagv/mesh/base/caster_origin_joint.${model_img_type}"/>
     <!-- <xacro:property name="model_img_body"           value="file://$(find journal1-sim)/urdf/smagv/mesh/base/AGV0208.${model_img_type}"/> -->
     <xacro:property name="base_height"              value="0"/>                                                                 <!-- -->
@@ -227,6 +228,7 @@
     </ros2_control>
     <gazebo>
         <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+            <!-- <robot_namespace>robot1</robot_namespace> -->
             <robot_param>robot_description</robot_param>
             <robot_param_node>robot_state_publisher</robot_param_node>
             <parameters>$(find journal1-sim)/config/diff_drive_ros2_control_controllers.yaml</parameters>
@@ -368,7 +370,8 @@
 
     <!-- VLP-16 on Gazebo -->
     <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
-    <xacro:VLP-16 parent="base_link" name="velodyne" topic="/sensing/lidar/concatenated/pointcloud" hz="10" samples="440" gpu="true">
+    <!-- <xacro:VLP-16 parent="base_link" name="velodyne_top" topic="/sensing/lidar/top/pointcloud_raw_ex" hz="10" samples="440" gpu="true" organize_cloud="true"> -->
+    <xacro:VLP-16 parent="base_link" name="velodyne_top" topic="/robot1/sensing/lidar/top/pointcloud_raw_ex" hz="10" samples="440" gpu="true" organize_cloud="true">
         <origin xyz="0.232 0 ${height_joint_velodyne}" rpy="0 0 0"/>
     </xacro:VLP-16>
 
