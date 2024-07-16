@@ -13,7 +13,7 @@
 #       wheel_separation: 0.322
 #       wheel_radius: 0.195
 #       publish_rate: 50
-robot2:
+robot1:
   controller_manager:
     ros__parameters:
       update_rate: 100
@@ -50,4 +50,4 @@ robot2:
       # odom_frame_id: /base_link
       base_frame_id: base_link
       enale_odom_tf: false
-
+      

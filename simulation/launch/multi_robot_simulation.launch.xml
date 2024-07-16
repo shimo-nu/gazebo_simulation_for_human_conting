@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+    <include file="$(find-pkg-share journal1-sim)/launch/start_world.launch.py">
+        <arg name="world_name" value="$(find-pkg-share journal1-sim)/world/many_people.world"/>
+    </include>
+
+    <include file="$(find-pkg-share journal1-sim)/launch/spawn_with_control.launch.xml">
+            <arg name="robot_name" value="robot1"/>
+            <arg name="robot_file" value="$(find-pkg-share journal1-sim)/urdf/smagv/smagv.urdf.xacro"/>
+            <arg name="x_spawn" value="0"/>
+            <arg name="y_spawn" value="0.0"/>
+            <arg name="z_spawn" value="0.16"/>
+            <arg name="roll_spawn" value="0.0"/>
+            <arg name="pitch_spawn" value="0.0"/>
+            <arg name="yaw_spawn" value="0.0"/>
+    </include>
+
+    <include file="$(find-pkg-share journal1-sim)/launch/spawn_with_control.launch.xml">
+            <arg name="robot_name" value="robot2"/>
+            <arg name="robot_file" value="$(find-pkg-share journal1-sim)/urdf/smagv/smagv_robot2.urdf.xacro"/>
+            <arg name="x_spawn" value="5"/>
+            <arg name="y_spawn" value="0.0"/>
+            <arg name="z_spawn" value="0.16"/>
+            <arg name="roll_spawn" value="0.0"/>
+            <arg name="pitch_spawn" value="0.0"/>
+            <arg name="yaw_spawn" value="1.5708"/>
+    </include>
+
+</launch>
