@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="joy" exec="joy_node" output="screen"/>
+
+    <node pkg="journal1-sim" exec="journal1-sim" output="screen">
+        <param name="gain_linear_x" value="1.0"/>
+        <param name="gain_angular_z" value="1.0"/>
+        <param name="is_stamped" value="true"/>
+        <param name="max_mode" value="2"/>
+    </node>
+
+</launch>
