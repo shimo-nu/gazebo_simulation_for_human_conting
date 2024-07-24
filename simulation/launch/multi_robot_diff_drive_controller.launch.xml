@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+  <group>
+    <include file="$(find-pkg-share journal1-sim)/launch/diff_drive_controller.launch.py">
+            <arg name="robot_name" value="robot1"/>
+    </include>
+  </group>
+  <group>
+    <include file="$(find-pkg-share journal1-sim)/launch/diff_drive_controller.launch.py">
+            <arg name="robot_name" value="robot2"/>
+    </include>
+  </group>
+
+</launch>
