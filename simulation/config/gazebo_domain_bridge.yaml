@@ -1,0 +1,145 @@
+# Name of the domain bridge, used for node naming and logging
+name: my_bridge
+from_domain: 50
+to_domain: 3
+topics:
+  robot1/sensing/lidar/top/pointcloud_raw_ex:
+    type: sensor_msgs/msg/PointCloud2
+    from_domain: 50
+    to_domain: 51
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: False
+    remap: sensing/lidar/top/pointcloud_raw_ex
+
+  robot1/sensing/imu/imu_data:
+    type: sensor_msgs/msg/Imu
+    from_domain: 50
+    to_domain: 51
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: False
+    remap: sensing/imu/imu_data
+
+  robot1/tf:
+    type: tf2_msgs/msg/TFMessage
+    from_domain: 50
+    to_domain: 51
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: True
+    remap: tf
+
+  robot1/joint_states:
+    type: sensor_msgs/msg/JointState
+    from_domain: 50
+    to_domain: 51
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: True
+    remap: joint_states
+
+  robot1/robot_description:
+    type: std_msgs/msg/String
+    from_domain: 50
+    to_domain: 51
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: True
+    remap: robot_description
+
+
+  robot1/tf_static:
+    type: tf2_msgs/msg/TFMessage
+    from_domain: 50
+    to_domain: 51
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: True
+    remap: tf_static
+
+  
+  robot1/diff_drive_controller/cmd_vel:
+    type: geometry_msgs/msg/TwistStamped
+    from_domain: 50
+    to_domain: 51
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: True
+    remap: diff_drive_controller/cmd_vel
+
+  robot1/diff_drive_controller/odom:
+    type: nav_msgs/msg/Odometry
+    from_domain: 50
+    to_domain: 51
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: True
+    remap: diff_drive_controller/odom
+
+
+  robot2/sensing/lidar/top/pointcloud_raw_ex:
+    type: sensor_msgs/msg/PointCloud2
+    from_domain: 50
+    to_domain: 52
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: False
+    remap: sensing/lidar/top/pointcloud_raw_ex
+  
+  robot2/sensing/imu/imu_data:
+    type: sensor_msgs/msg/Imu
+    from_domain: 50
+    to_domain: 52
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: False
+    remap: sensing/imu/imu_data
+
+  robot2/tf:
+    type: tf2_msgs/msg/TFMessage
+    from_domain: 50
+    to_domain: 52
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: True
+    remap: tf
+
+  robot2/joint_states:
+    type: sensor_msgs/msg/JointState
+    from_domain: 50
+    to_domain: 52
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: True
+    remap: joint_states
+
+  robot2/robot_description:
+    type: std_msgs/msg/String
+    from_domain: 50
+    to_domain: 52
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: True
+    remap: robot_description
+
+  robot2/tf_static:
+    type: tf2_msgs/msg/TFMessage
+    from_domain: 50
+    to_domain: 52
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: True
+    remap: tf_static
+
+  robot2/diff_drive_controller/cmd_vel:
+    type: geometry_msgs/msg/TwistStamped
+    from_domain: 50
+    to_domain: 52
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: True
+    remap: diff_drive_controller/cmd_vel
+
+  robot2/diff_drive_controller/odom:
+    type: nav_msgs/msg/Odometry
+    from_domain: 50
+    to_domain: 52
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: True
+    remap: diff_drive_controller/odom
+
+  clock:
+    type: rosgraph_msgs/msg/Clock
+    from_domain: 50
+    to_domain: 51
+  
+  clock:
+    type: rosgraph_msgs/msg/Clock
+    from_domain: 50
+    to_domain: 52
