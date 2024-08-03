@@ -53,12 +53,16 @@ private:
   bool is_stamped_;
   int mode_;
   int max_mode_;
+  int before_change_mode_time = 0;
+  
 
 
   void joyCallback(const sensor_msgs::msg::Joy::SharedPtr joy_msg)
   {
-    if (joy_msg->buttons[0]){
+    if (joy_msg->buttons[0] && before_change_mode_time + 1 < joy_msg->header.stamp.sec){
       mode_ += 1;
+      before_change_mode_time = joy_msg->header.stamp.sec;
+      RCLCPP_INFO(this->get_logger(), "Change Mode : Robot%d", mode_ + 1);
       if (mode_ >= max_mode_){
         mode_ = 0;
       }
