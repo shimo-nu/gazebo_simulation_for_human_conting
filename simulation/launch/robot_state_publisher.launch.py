@@ -12,7 +12,7 @@ def launch_setup(context, *args, **kwargs):
     # Accessing the argument variables.
     robot_name = LaunchConfiguration('robot_name').perform(context)
     robot_file = LaunchConfiguration('robot_file').perform(context)
-    robot_description_topic_name = "/" + robot_name + "_robot_description"
+    robot_description_topic_name = "/" + robot_name + "/robot_description"
     joint_state_topic_name = "/" + robot_name + "/joint_states"
     robot_state_publisher_name =  robot_name + "_robot_state_publisher"
     # robot_state_publisher_name = "robot_state_publisher"
@@ -31,20 +31,23 @@ def launch_setup(context, *args, **kwargs):
         robot_desc = xacro.process_file(robot_desc_path, mappings={'robot_name' : robot_name})
     else:
         assert False, "Extension of robot file not suppored = "+str(extension)
-  
+
  
     xml = robot_desc.toxml()
+    
+    print(xml)
+    
 
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
-        name=robot_state_publisher_name,
+        name='robot_state_publisher',
         emulate_tty=True,
-        parameters=[{'use_sim_time': True, 'robot_description': xml, 'frame_prefix': robot_name + '/'}],
-        remappings=[("/robot_description", robot_description_topic_name),
-                    ("/joint_states", joint_state_topic_name)
-                    ],
-        # namespace=robot_name,
+        parameters=[{'use_sim_time': True, 'robot_description': xml}], #, 'frame_prefix': robot_name + '/'}],
+        remappings=[# ("/robot_description", robot_description_topic_name),
+        #             ("/joint_states", joint_state_topic_name)
+                    ("/tf", "tf"), ("/tf_static", "tf_static")], 
+        namespace=robot_name,
         output="screen"
     )
 
