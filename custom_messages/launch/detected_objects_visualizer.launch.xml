@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+  <group>
+    <push-ros-namespace namespace="robot1"/>
+    <node pkg="custom_messages" exec="detected_objects_visualizer_node" name="detected_objects_visualizer_node">
+      <param name="topic_name" value="perception/object_detection/merged_objects"/>
+    </node>
+
+  </group>
+  <group>
+    <push-ros-namespace namespace="robot2"/>
+    <node pkg="custom_messages" exec="detected_objects_visualizer_node" name="detected_objects_visualizer_node">
+      <param name="topic_name" value="perception/object_detection/merged_objects"/>
+    </node>
+
+  </group>
+</launch>
