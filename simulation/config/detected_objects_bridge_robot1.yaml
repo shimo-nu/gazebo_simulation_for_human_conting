@@ -1,0 +1,17 @@
+# Name of the domain bridge, used for node naming and logging
+name: robot1_bridge
+from_domain: 50
+to_domain: 3
+topics:
+  perception/object_detection/merged_objects:
+    type: custom_messages/msg/DetectedObjects
+    from_domain: 51
+    to_domain: 53
+    # Bridge from domain ID 7 to domain ID 8 AND from domain ID 8 to domain ID 7
+    bidirectional: False
+    remap: /robot1/perception/object_detection/merged_objects
+
+  map/pointcloud_map:
+    type: sensor_msgs/msg/PointCloud2
+    from_domain: 51
+    to_domain: 53
