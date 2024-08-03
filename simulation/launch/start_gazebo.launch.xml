@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <include file="$(find-pkg-share journal1-sim)/launch/start_world.launch.py">
+        <arg name="world_name" value="$(find-pkg-share journal1-sim)/world/many_people.world"/>
+    </include>
+</launch>
