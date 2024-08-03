@@ -35,10 +35,10 @@ robot1:
       wheel_separation: 0.322 
       wheel_radius: 0.195
       publish_rate: 50.0
-      odom_frame_id: /odom
-      # odom_frame_id: /base_link
-      base_frame_id: /base_link
-      enale_odom_tf: true
+      # odom_frame_id: /odom
+      odom_frame_id: /base_link
+      # base_frame_id: /base_link
+      enale_odom_tf: false
       tf_frame_prefix_enable: false
       
 # controller_manager:
@@ -89,10 +89,10 @@ robot2:
       wheel_separation: 0.322
       wheel_radius: 0.195
       publish_rate: 50.0
-      odom_frame_id: /odom
-      # odom_frame_id: /base_link
-      base_frame_id: /base_link
-      enale_odom_tf: true
+      # odom_frame_id: /odom
+      odom_frame_id: /base_link
+      # base_frame_id: /base_link
+      enale_odom_tf: false
 
       tf_frame_prefix_enable: false
 
