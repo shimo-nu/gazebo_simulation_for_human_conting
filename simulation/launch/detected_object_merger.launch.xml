@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="journal1-sim" exec="multi_robot_object_detection_merger_node" name="multi_robot_object_detection_mereger">
+    <param name="timer_hz" value="10"/>
+  </node>
+</launch>
