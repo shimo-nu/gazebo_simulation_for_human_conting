@@ -20,9 +20,9 @@ def launch_setup(context, *args, **kwargs):
   pitch_spawn = LaunchConfiguration('pitch_spawn').perform(context)
   yaw_spawn = LaunchConfiguration('yaw_spawn').perform(context)
 
-  robot_description_topic_name = "/" + entity_name + "_robot_description"
-  # robot_description_topic_name = "/" + entity_name + "/robot_description"
-  robot_state_publisher_name= entity_name + "_robot_state_publisher"
+  # robot_description_topic_name = "/" + entity_name + "_robot_description"
+  robot_description_topic_name = "/" + entity_name + "/robot_description"
+  # robot_state_publisher_name= entity_name + "_robot_state_publisher"
 
   spawn_robot = Node(
       package='gazebo_ros',
@@ -33,11 +33,13 @@ def launch_setup(context, *args, **kwargs):
       arguments=['-entity',entity_name,
                   '-x', str(x_spawn), '-y', str(y_spawn), '-z', str(z_spawn),
                   '-R', str(roll_spawn), '-P', str(pitch_spawn), '-Y', str(yaw_spawn),
-                  '-topic', robot_description_topic_name
-                  # '-robot_namespace', entity_name
+                  '-topic', robot_description_topic_name,
+                  '-robot_namespace', entity_name
+                  # '-gazebo_namespace', entity_name
                   ],
-      remappings=[("/robot_state_publisher", robot_state_publisher_name)
-                  ]
+      # remappings=[("/robot_state_publisher", robot_state_publisher_name)
+      #             ],
+      namespace=entity_name
   )
   
     
