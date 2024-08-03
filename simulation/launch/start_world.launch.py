@@ -19,7 +19,7 @@ def generate_launch_description():
       PythonLaunchDescriptionSource(
           os.path.join(pkg_gazebo_ros, 'launch', 'gzserver.launch.py')
       ),
-      launch_arguments={'world': LaunchConfiguration('world_name'), 'emulate_tty': 'True', 'output': 'screen'}.items()
+        launch_arguments={'world': LaunchConfiguration('world_name'), 'verbose': 'True', 'emulate_tty': 'True', 'output': 'screen'}.items()
     )
     
     gzclient_cmd = IncludeLaunchDescription(
@@ -34,5 +34,5 @@ def generate_launch_description():
 
     return LaunchDescription([
         gzserver_cmd,
-        # gzclient_cmd
+        gzclient_cmd
     ])
